@@ -1,0 +1,81 @@
+{
+    "name": "textcode diag proc",
+    "n_gpu": 1,
+    "model": {
+        "type": "MemTransformerLM",
+        "module_name": "mem_transformer",
+        "init": "init",
+        "init_range": 0.1,
+        "init_std": 0.02, 
+        "proj_init_std": 0.01,
+        "args": {
+            "n_token": 893,
+            "n_layer": 2,
+            "d_model": 384,
+            "n_head": 8,
+            "d_head": 64,
+            "d_inner": 2048,
+            "dropout": 0.0,
+            "tie_weight": false,
+            "d_embed": 384,
+            "dropatt": 0.0,
+            "tgt_len": 0,
+            "mem_len": 0,
+            "ext_len": 0,
+            "demographics_len": 0
+        }
+    },
+    "data_loader": {
+        "type": "SeqCodeDataLoader",
+        "args": {
+            "data_dir": "./data/textcode/biobert_pubmed",
+            "batch_size": 32,
+            "shuffle": true,
+            "validation_split": 0.10,
+            "num_workers": 1,
+            "med": false,
+            "cptcode": false,
+            "proc": true,
+            "diag": true 
+        }
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args": {
+            "lr": 0.00015,
+            "weight_decay": 0,
+            "amsgrad": true
+         }
+    },
+    "loss": "med2vec_loss_transformer",
+    "clip_grad":0.25,
+    "loss_window": 2, 
+    "metrics": [
+        "recall_10", "recall_20", "recall_30", "recall_40",
+        "recall_10_proc", "recall_20_proc", "recall_30_proc", "recall_40_proc",
+        "recall_10_diag", "recall_20_diag", "recall_30_diag", "recall_40_diag"
+
+    ],
+    "lr_scheduler": {
+        "type": "CosineAnnealingLR",
+        "args": {
+            "T_max": 25,
+            "eta_min": 0.0000025 
+        }
+    },
+     "trainer": {
+        "type": "SeqCodeTrainer",
+        "module_name": "seqcode_trainer",
+        "epochs": 50,
+        "save_dir": "saved/",
+        "save_period": 10,
+        "verbosity": 2000,
+        "log_step":2000,
+        "recall_k": 10,
+        "monitor": "min val_loss",
+        "code_loss": true,
+        "visit_loss": true,
+        "tensorboardX": false,
+        "log_dir": "saved/runs"
+    }
+}

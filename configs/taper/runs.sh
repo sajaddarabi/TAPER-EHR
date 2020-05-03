@@ -1,0 +1,4 @@
+#!/bin/bash
+python y_runs.py -c ./configs/textcode/red.json -fname 'textcode_red_{}' -cpname './saved/t_recall_{}' -cpoint 'checkpoint-epoch10.pth' -cfield 'transformer_state_path' -tpname './saved/text_discharge_{}' -tpoint 'checkpoint-epoch30.pth' -tfield 'text_summarizer_state_path'
+python y_runs.py -c ./configs/textcode/los.json -fname 'textcode_los_{}' -cpname './saved/t_recall_{}' -cpoint 'checkpoint-epoch10.pth' -cfield 'transformer_state_path' -tpname './saved/text_rest_{}' -tpoint 'checkpoint-epoch30.pth' -tfield 'text_summarizer_state_path'
+python y_runs.py -c ./configs/textcode/mort.json -fname 'textcode_mort_{}' -cpname './saved/t_recall_{}' -cpoint 'checkpoint-epoch10.pth' -cfield 'transformer_state_path' -tpname './saved/text_rest_{}' -tpoint 'checkpoint-epoch30.pth' -tfield 'text_summarizer_state_path'

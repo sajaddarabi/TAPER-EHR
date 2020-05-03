@@ -1,0 +1,70 @@
+{
+    "name": "los textcode",
+    "n_gpu": 1,
+    
+    "model": {
+        "type": "TextCodePre",
+        "module_name": "textcodepre",
+        "args": { 
+            "transformer_state_path": "./saved/t_recall_0/1128_181610/checkpoint-epoch100.pth",
+            "text_summarizer_state_path": "./saved/text_rest_0/1128_165254/checkpoint-epoch30.pth",
+            "num_classes": 9,
+            "demographics_size": 91,
+            "text": true,
+            "div_factor": 2,
+            "codes": true 
+        }
+    },
+    "data_loader": {
+        "type": "ClassificationDataLoader",
+        "args": {
+            "data_dir": "./data/textcode/biobert_pubmed/",
+            "y_label": "los",
+            "split_num": 0, 
+            "balanced_data": true,
+            "batch_size": 64,
+            "text": "rest",
+            "shuffle": true,
+            "validation_split": 0.15,
+            "num_workers": 4,
+            "med": false,
+            "cptcode": false,
+            "proc": true,
+            "diag": true
+
+        }
+    },
+    "do_roc_metrics": true,
+    "optimizer": {
+        "type": "Adam",
+        "args": {
+            "lr": 0.001,
+            "weight_decay": 0,
+            "amsgrad": true
+        }
+    },
+    "loss": "nll_loss",
+    "metrics": [
+        "accuracy"
+     ],
+    "lr_scheduler": {
+        "type": "StepLR",
+        "args": {
+            "step_size": 10,
+            "gamma": 0.1
+        }
+    },
+    "trainer": {
+        "type": "ClassificationTrainer",
+        "module_name": "classification_trainer",
+        "epochs": 30,
+        "save_dir": "/mnt/sda1/data/experiments/saved/",
+        "save_period": 10,
+        "verbosity": 2000,
+        "log_step": 1000,
+        
+        "monitor": "max accuracy",
+        "tensorboardX": false,
+        "log_dir": "saved/runs"
+    }
+}

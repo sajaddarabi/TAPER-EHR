@@ -1,0 +1,78 @@
+{
+    "name": "red textcode",
+    "n_gpu": 1,
+    
+    "model": {
+        "type": "TextCodePre",
+        "module_name": "textcodepre",
+        "args": { 
+            "transformer_state_path": "./saved/t_recall_0/0106_201658/checkpoint-epoch100.pth",
+            "text_summarizer_state_path": "./saved/text_discharge_0/0106_200335/checkpoint-epoch30.pth",
+            "num_classes": 1,
+            "text": true,
+            "codes": true,
+            "demographics_size": 91,
+			"div_factor": 4,
+            "dropout":0.1
+        }
+    },
+    "data_loader": {
+        "type": "ClassificationDataLoader",
+        "args": {
+            "data_dir": "./data/textcode/biobert_pubmed/",
+            "balanced_data": true,
+            "y_label": "readmission",
+            "batch_size": 32,
+            "min_adm": 1,
+            "shuffle": true,
+            "validation_split": 0.15,
+            "text": "discharge",
+            "num_workers": 4,
+            "med": false,
+            "cptcode": false,
+            "proc": true,
+            "diag": true
+        }
+    },
+    "do_roc_metrics": true,
+    "optimizer": {
+        "type": "Adam",
+        "args": {
+            "lr": 0.001,
+            "weight_decay": 0.000,
+            "amsgrad": true
+        }
+    },
+    "loss": "bce_loss",
+    "metrics": [
+        "accuracy2",
+        "sensitivity",
+        "specificity",
+        "precision",
+        "pr_auc",
+        "roc_auc"
+    ],
+    "lr_scheduler": {
+        "type": "StepLR",
+        "args": {
+            "step_size": 10,
+            "gamma": 0.1
+        }
+    },
+    "trainer": {
+        "type": "ClassificationTrainer",
+        "module_name": "classification_trainer",
+        "class_weight_0": 1.0,
+        "class_weight_1": 1.0,
+        "class_weight": [1.0, 1.0],
+        "epochs": 30,
+        "save_dir": "/mnt/sda1/data/experiments/saved/",
+        "save_period": 10,
+        "verbosity": 2000,
+        "log_step":2000,
+        "monitor": "max accuracy2",
+        "early_stop": 100,
+        "tensorboardX": false,
+        "log_dir": "saved/runs"
+    }
+}
