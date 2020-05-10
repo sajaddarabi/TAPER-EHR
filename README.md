@@ -12,9 +12,9 @@ article{darabi2019taper,
 
 ## Dependencies
 
-This project in a conda virtual environment on Ubuntu 16.04 with CUDA 10.0. Dependencies:
-* [pytorch with torchvision](http://pytorch.org/). Note that you need at least a fairly recent version of PyTorch (e.g., 1.0). 
-* [tensorflow with tensorboard](https://www.tensorflow.org/install/) (This is not critical, however, and you can comment out all references to TF and TB) 
+This project was run in a conda virtual environment on Ubuntu 16.04 with CUDA 10.0. Dependencies:
+* [pytorch with torchvision](http://pytorch.org/). Note that you need a fairly recent version of PyTorch (e.g., 1.0). 
+* [tensorflow with tensorboard](https://www.tensorflow.org/install/) (This is not critical, however, you can comment out all references to TF and TB) 
 
 Checkout the `requirements.txt` file.
 
@@ -25,13 +25,13 @@ Bert models are typically trained in tensorflow and hence require to be ported i
 
 For example, download the [Biobert-Base v1.1](https://github.com/naver/biobert-pretrained)
 
-Once you've downloaded the model to convert into pytorch run the following from ./model/bert_things/pytorch_pretrained_bert/ folder
+Once you've downloaded the model, to convert it into pytorch run the following command from ./model/bert_things/pytorch_pretrained_bert/ folder
 
 ```
 python convert_to_pytorch.py --path <path-to-biobert-folder>/biobert_model.ckpt --config <path-to-biobert-folder>/bert_config.json --save <path-to-save-converted-model>
 ```
 
-Once the pretrained model has been converted we can load it into our bert models in pytorch. 
+Once the pretrained model has been converted, we can load it into our bert model in pytorch. 
 
 ## Running the experiments
 
