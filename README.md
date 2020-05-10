@@ -60,7 +60,9 @@ In the above command
     - med is a flag to add medical codes to final output
     - cpt is a flag to add cpt to final output
     - sc is a flag for short codes if you specify this you must add vp
-    - vp path where diagnoses and cpt map code to id are stored (take a look [here](https://github.com/sajaddarabi/HCUP-US-EHR) )
+    - vp path where diagnoses and cpt map code to id are stored 
+
+Take a look [here](https://github.com/sajaddarabi/HCUP-US-EHR) for HCUP diagnosis/CPT code map examples.
 
 Once the above script finishes, we can pretrain both code and text models:
 
