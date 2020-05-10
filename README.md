@@ -27,7 +27,9 @@ For example, download the [Biobert-Base v1.1](https://github.com/naver/biobert-p
 
 Once you've downloaded the model to convert into pytorch run the following from ./model/bert_things/pytorch_pretrained_bert/ folder
 
-```python convert_to_pytorch.py --path <path-to-biobert-folder>/biobert_model.ckpt --config <path-to-biobert-folder>/bert_config.json --save <path-to-save-converted-model>```
+```
+python convert_to_pytorch.py --path <path-to-biobert-folder>/biobert_model.ckpt --config <path-to-biobert-folder>/bert_config.json --save <path-to-save-converted-model>
+```
 
 Once the pretrained model has been converted we can load it into our bert models in pytorch. 
 
@@ -36,11 +38,15 @@ Once the pretrained model has been converted we can load it into our bert models
 Make sure you have downloaded the MIMIC III dataset (specifically the csv files). Once you have downloaded the dataset
 run the following to compile a dataframe where rows correspond to admissions:
 
-````python gen_data_df.py -p <path-to-mimic-folder> -s <path-to-save-files> -min-adm 1 -ft "Discharge summary" Physician ECG Radiology Respiratory Nursing Pharmacy Nutrition```
+```
+python gen_data_df.py -p <path-to-mimic-folder> -s <path-to-save-files> -min-adm 1 -ft "Discharge summary" Physician ECG Radiology Respiratory Nursing Pharmacy Nutrition
+```
 
 The above will generate a dataframe containing demographics, medical codes, and medical texts for each admission. The `min-adm` argument is used to filter out patients with less than the specified number of admissions and `ft` argument is used to filter texts that are included in the patients row . Next, we will generate a dictionary containing patient id's and values list of dicts containing admission data/labels.
 
-```python gen_text_plus_code_data.py -p '<path-to-where-df-were-saved>/df_less_1.pkl' -s '<path-to-save-output>' -et -cpb './data/biobert_pubmed/bert_config.json' -sdp './data/biobert_pubmed_model' -vpb './data/biobert_pubmed/vocab.txt' -bsl 512 -diag -proc -med -cpt -sc -vp <path-to-medical-code-vocabulary>```
+```
+python gen_text_plus_code_data.py -p '<path-to-where-df-were-saved>/df_less_1.pkl' -s '<path-to-save-output>' -et -cpb './data/biobert_pubmed/bert_config.json' -sdp './data/biobert_pubmed_model' -vpb './data/biobert_pubmed/vocab.txt' -bsl 512 -diag -proc -med -cpt -sc -vp <path-to-medical-code-vocabulary>
+```
 
 In the above command 
     - et is a flag to embed text
