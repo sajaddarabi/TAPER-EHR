@@ -49,6 +49,7 @@ python gen_text_plus_code_data.py -p '<path-to-where-df-were-saved>/df_less_1.pk
 ```
 
 In the above command 
+
     - et is a flag to embed text
     - cbp is the path to pretrained bert config
     - sdp is the path to pretrained state_dict
@@ -58,7 +59,7 @@ In the above command
     - proc is a flag to add procedure to final output
     - med is a flag to add medical codes to final output
     - cpt is a flag to add cpt to final output
-    - sc is a flag for short codes if you specify this you must add -vp
+    - sc is a flag for short codes if you specify this you must add vp
     - vp path where diagnoses and cpt map code to id are stored (take a look [here](https://github.com/sajaddarabi/HCUP-US-EHR) )
 
 Once the above script finishes, we can pretrain both code and text models:
