@@ -3,7 +3,7 @@ import os
 from tqdm import tqdm
 from model.bert_things.pytorch_pretrained_bert.tokenization import BertTokenizer
 from model.bert_things.pytorch_pretrained_bert import BertConfig, BertModel, BertPreTrainedModel
-from model.text2code import BertTextModel
+from model.bert_text_model import BertTextModel
 from data_loader.utils.vocab import Vocab
 import pickle
 import sys
@@ -195,7 +195,7 @@ def main():
         model.init_bert_weights(state_dict)
         device, _ = _prepare_device(args.gpu)
         model = model.to(device)
-max_seq_len_text_d = args.text_seq_length_discharge
+	max_seq_len_text_d = args.text_seq_length_discharge
         max_seq_len_text_r = args.text_seq_length_rest
 
         if max_seq_len_text_d  == 0:
