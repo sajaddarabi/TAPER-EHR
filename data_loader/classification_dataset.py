@@ -29,13 +29,9 @@ class ClassificationDataset(data.Dataset):
         if (not sequential):
             self.pre = self.preprocess_non_seq
 
-        self.data = pickle.load(open(os.path.join(self.data_path, 'data_filt.pkl'), 'rb'))
+        self.data = pickle.load(open(os.path.join(self.data_path, 'data.pkl'), 'rb'))
         self.data_info = self.data['info']
         self.data = self.data['data']
-
-        self.train_idx, self.valid_idx = pickle.load(open(os.path.join(self.data_path, 'splits', 'split_{}.pkl'.format(split_num)), 'rb'))
-        self.train_idx = self._filt_indices(self.train_idx, min_adm)
-        self.valid_idx = self._filt_indices(self.valid_idx, min_adm)
 
         self.text_dim = self._get_text_dim(self.data)
         self.demographics_shape = self.data_info['demographics_shape']
@@ -58,22 +54,28 @@ class ClassificationDataset(data.Dataset):
                          self.proc * self.num_pcodes + \
                          self.med * self.num_mcodes#len(self.vocab)
 
+        data_split_path = os.path.join(self.data_path, 'splits', 'split_{}.pkl'.format(split_num))
+        if (os.path.exists(data_split_path)):
+            self.train_idx, self.valid_idx = pickle.load(open(data_split_path, 'rb'))
+            self.train_idx = self._filt_indices(self.train_idx, min_adm)
+            self.valid_idx = self._filt_indices(self.valid_idx, min_adm)
+            self.train_indices = self._gen_indices(self.train_idx)
+            self.valid_indices = self._gen_indices(self.valid_idx)
 
-        self.train_indices = self._gen_indices(self.train_idx)
-        self.valid_indices = self._gen_indices(self.valid_idx)
+            self.train_idx = np.asarray(range(len(self.train_indices)))
+            self.valid_idx = len(self.train_indices) + np.asarray(range(len(self.valid_indices)))
 
-        self.train_idx = np.asarray(range(len(self.train_indices)))
-        self.valid_idx = len(self.train_indices) + np.asarray(range(len(self.valid_indices)))
-
-
-
-
-        if (self.balanced_data):
-            self.train_idx = self._gen_balanced_indices(self.train_idx)
-            #self.valid_idx = self._gen_balanced_indices(self.valid_idx)
+            if (self.balanced_data):
+                self.train_idx = self._gen_balanced_indices(self.train_idx)
+                #self.valid_idx = self._gen_balanced_indices(self.valid_idx)
+        else:
+            # TODO: data index logic if train, validation splits are not provided
+            pass
 
 
     def _filt_indices(self, indices, min_adm):
+        """Remove patients with admissions less than min_adm
+        """
         t = []
         for idx in indices:
             if (len(self.data[idx]) < min_adm):
@@ -82,6 +84,8 @@ class ClassificationDataset(data.Dataset):
         return t
 
     def _gen_balanced_indices(self, indices):
+        """Generate a balanced set of indices
+        """
         ind_idx = {}
 
         for idx in indices:

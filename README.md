@@ -64,7 +64,15 @@ In the above command
 
 Take a look [here](https://github.com/sajaddarabi/HCUP-US-EHR) for HCUP diagnosis/CPT code map examples.
 
-Once the above script finishes, we can pretrain both code and text models:
+Once the above script finishes, generate kfold splts by running 
+
+```
+python kfold.py -p <path-to-data.pkl> -s <path-to-directory-data.pkl-is-stored>/splits
+```
+
+These splits will be used to determine the train and validation idx, and to avoid cross-contamination in the pre-training phases. 
+Note that in the dataloaders it is assumed the splits_X.pkl are stored in the `splits` directory inside the same directory in which data.pkl was saved.
+we can pretrain both code and text models:
 
 
 ### Running Code Training

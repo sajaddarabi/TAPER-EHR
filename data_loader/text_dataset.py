@@ -16,15 +16,17 @@ class TextDataset(data.Dataset):
         self.data = pickle.load(open(os.path.join(data_path, 'data.pkl'), 'rb'))
         self.data_info = self.data['info']
         self.data = self.data['data']
+        data_split_path = os.path.join(data_path, 'splits', 'split_{}.pkl'.format(split_num)
+        if (os.path.exists(data_split_path)):
+            self.train_idx, self.valid_idx = pickle.load(open(data_split_path, 'rb'))
+            self.train_data = self.create_dataset(text, self.train_idx)
+            self.valid_data = self.create_dataset(text, self.valid_idx)
+            self.train_idx = np.asarray(range(0, len(self.train_data)))
+            self.valid_idx = len(self.train_idx) + np.asarray(range(0, len(self.valid_data)))
+        else:
+            self.train_data = self.create_dataset(text, self.data.keys())
 
-        self.train_idx, self.valid_idx = pickle.load(open(os.path.join(data_path, 'splits', 'split_{}.pkl'.format(split_num)), 'rb'))
-        #self.data = self.create_dataset(text)
 
-        self.train_data = self.create_dataset(text, self.train_idx)
-        self.valid_data = self.create_dataset(text, self.valid_idx)
-        self.train_idx = np.asarray(range(0, len(self.train_data)))
-        self.valid_idx = len(self.train_idx) + np.asarray(range(0, len(self.valid_data)))
-        max_len = self.max_length(text, list(self.train_idx) + list(self.valid_idx))
 
     def create_dataset(self, text_type, keys):
         t = []
@@ -37,19 +39,9 @@ class TextDataset(data.Dataset):
                 t.append(tt)
         return t
 
-    def max_length(self, text_type, keys):
-        m = 0
-        mi = 100
-        for i in range(len(keys)):
-            x, i = self.__getitem__(keys[i])
-            if i > m:
-                m=i
-            if (i < mi):
-                mi = i
-        return m, mi
-
     def __getitem__(self, index):
-        if (index in self.train_idx):
+        if (hasattr(self, 'train_idx') and index in self.train_idx) or
+            (index < len(self.train_data)):
             d = self.train_data[index]
         else:
             d = self.valid_data[index - len(self.train_data)]

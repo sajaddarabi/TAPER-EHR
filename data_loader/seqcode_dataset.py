@@ -18,7 +18,10 @@ class SeqCodeDataset(data.Dataset):
         self.data_info = self.data['info']
         self.data = self.data['data']
 
-        self.train_idx, self.valid_idx = pickle.load(open(os.path.join(data_path, 'splits', 'split_{}.pkl'.format(split_num)), 'rb'))
+
+        data_split_path = os.path.join(self.data_path, 'splits', 'split_{}.pkl'.format(split_num))
+        if (os.path.exists(data_split_path)):
+            self.train_idx, self.valid_idx = pickle.load(open(data_split_path, 'rb'))
 
         self.diag_vocab = pickle.load(open(os.path.join(data_path, 'diag_vocab.pkl'), 'rb'))
         self.med_vocab = pickle.load(open(os.path.join(data_path, 'med_vocab.pkl'), 'rb'))
@@ -27,19 +30,18 @@ class SeqCodeDataset(data.Dataset):
 
         self.keys = list(self.data.keys())
         self.keys = self._get_keys()
-        #self.train_idx = self._gen_idx(self.train_idx)
-        #self.valid_idx = self._gen_idx(self.valid_idx)
+
         self.max_len = self._findmax_len(self.keys)
 
-        self.num_dcodes = len(self.diag_vocab)#self._find_num_tokens()
-        self.num_pcodes = len(self.proc_vocab)#self._find_num_tokens(ext='P')
-        self.num_mcodes = len(self.med_vocab)#self._find_num_tokens(ext='M')
-        self.num_ccodes = len(self.cpt_vocab)#self._find_num_tokens(ext='C')
+        self.num_dcodes = len(self.diag_vocab)
+        self.num_pcodes = len(self.proc_vocab)
+        self.num_mcodes = len(self.med_vocab)
+        self.num_ccodes = len(self.cpt_vocab)
 
         self.num_codes = self.diag * self.num_dcodes + \
                          self.cpt * self.num_ccodes + \
                          self.proc * self.num_pcodes + \
-                         self.med * self.num_mcodes#len(self.vocab)
+                         self.med * self.num_mcodes
 
         self.demographics_shape = self.data_info['demographics_shape']
 
@@ -81,7 +83,7 @@ class SeqCodeDataset(data.Dataset):
         if self.train:
             return len(self.keys)
         else:
-            return len(self.test_data)
+            return 0
 
     def __getitem__(self, k):
         x = self.preprocess(self.data[k])

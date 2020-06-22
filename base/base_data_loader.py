@@ -55,8 +55,8 @@ class BaseDataLoader(DataLoader):
         np.random.seed(self.seed)
 
         # shuffle indexes only if shuffle is true
+        # if order matters don't shuffle
         # added for med2vec dataset where order matters
-
         len_valid = int(self.n_samples * split)
         if (self.shuffle):
             if (hasattr(self.dataset, 'valid_idx')):
@@ -66,6 +66,8 @@ class BaseDataLoader(DataLoader):
                 valid_idx = idx_full[0:len_valid]
 
             train_sampler = SubsetRandomSampler(train_idx)
+            # use the balanced dataset sampler if balanced_data is set
+            # this option can be passed to the dataset class
             if (hasattr(self.dataset, 'balanced_data') and self.dataset.balanced_data):
                 train_sampler = ImbalancedSampler(self.dataset, train_idx)
 
