@@ -16,7 +16,7 @@
         }
     },
     "data_loader": {
-        "type": "LosReadmissionDataLoader",
+        "type": "ClassificationDataLoader",
         "args": {
             "data_dir": "./data/readmission/balanced",
             "balanced_data": true,
