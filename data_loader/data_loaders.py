@@ -56,10 +56,10 @@ class ClassificationDataLoader(BaseDataLoader):
         self.text =text
 
         self.dataset = ClassificationDataset(self.data_path, self.text, self.batch_size, y_label, self.train, balanced_data=balanced_data, validation_split=validation_split, sequential=sequential, **kwargs)
-        collate = clasification_collate
+        collate = classification_collate
         if not sequential:
             collate = non_seq_classification_collate
 
 
-        super(LosReadmissionDataLoader, self).__init__(self.dataset, batch_size, shuffle, validation_split, num_workers,
+        super(ClassificationDataLoader, self).__init__(self.dataset, batch_size, shuffle, validation_split, num_workers,
                 collate_fn=collate)
