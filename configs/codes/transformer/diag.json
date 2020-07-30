@@ -1,5 +1,5 @@
 {
-    "name": "diag codes",
+    "name": "diagnoses_code_training_0",
     "n_gpu": 1,
     "model": {
         "type": "MemTransformerLM",
@@ -36,7 +36,8 @@
             "med": false,
             "cptcode": false,
             "proc": false,
-            "diag": true 
+            "diag": true,
+            "split_num": 0
         }
     },
     "optimizer": {

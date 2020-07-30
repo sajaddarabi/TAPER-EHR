@@ -70,11 +70,12 @@ def compute_max_seq_len_text(df, col, tokenizer):
 def _prepare_device(n_gpu_use):
         """
         setup GPU device if available, move model into configured device
+        if n_gpu_use = 0, use cpu
         """
         n_gpu = torch.cuda.device_count()
         if n_gpu_use > 0 and n_gpu == 0:
             logging.warning("Warning: There\'s no GPU available on this machine, training will be performed on CPU.")
-            n_gpu_use = 0
+            n_gpu_use = -1
         if n_gpu_use > n_gpu:
             logging.warning("Warning: The number of GPU\'s configured to use is {}, but only {} are available on this machine.".format(n_gpu_use, n_gpu))
             n_gpu_use = n_gpu
@@ -95,9 +96,9 @@ def main():
     parser = argparse.ArgumentParser(description='Generate Text+Code dataset')
     parser.add_argument('-p', '--path', default=None, type=str, help='path to pandas dataframe where rows are admissions')
     parser.add_argument('-vp', '--vocab_path', default='', type=str, help='path to where code vocabulary are stored assumes diagnoses vocab file named as diag.vocab and cpt vocab as cpt.vocab')
-    parser.add_argument('-s', '--save', default='./', type=str, 'path to save pkl files')
+    parser.add_argument('-s', '--save', default='./', type=str, help='path to save pkl files')
     parser.add_argument('-et', '--embed_text', default=False, action='store_true', help='flag wether to embed text or not')
-    parser.add_argument('-cpb', '--bert_config_path', default=None, type=str,, help='path to bert config')
+    parser.add_argument('-cpb', '--bert_config_path', default=None, type=str, help='path to bert config')
     parser.add_argument('-vpb', '--bert_vocab_path', default=None, type=str, help='path to bert vocab ')
     parser.add_argument('-sdp', '--state_dict_path', default=None, type=str, help='path to bert state dict')
     parser.add_argument('-gpu', '--gpu', default=0, type=int)
@@ -108,7 +109,7 @@ def main():
     parser.add_argument('-diag', '--diagnoses', default=False, action='store_true', help='flag for including diagnoses codes')
     parser.add_argument('-proc', '--procedures', default=False, action='store_true', help='flag for including procedures codes')
     parser.add_argument('-med', '--medications', default=False, action='store_true', help='flag for including medication codes')
-    parser.add_argument('-cpt', '--cpt_codes', default=False, action='store_true', help='flag for including cpt codes')
+    parser.add_argument('-cpt', '--cpts', default=False, action='store_true', help='flag for including cpt codes')
 
     parser.add_argument('-ma', '--min_adm', default=0, type=int)
 
@@ -162,11 +163,12 @@ def main():
         #to use below checkout https://github.com/sajaddarabi/HCUP-US-EHR
         if (args.diagnoses):
             diag_vocab._build_from_file(os.path.join(args.vocab_path, 'diag.vocab'))
-        if (args.procedures):
-            proc_vocab._build_from_file(os.path.join(args.vocab_path, 'cpt.vocab'))
+        if (args.cpts):
+            cpt_vocab._build_from_file(os.path.join(args.vocab_path, 'cpt.vocab'))
+        #if (args.procedures):
+        #    proc_vocab._build_from_file(os.path.join(args.vocab_path, 'proc.vocab'))
         #if (args.med):
-        #    vocab._build_from_file(os.path.join(args.vocab_path, 'cpt.vocab'))
-        #med_vocab._build_from_file(os.path.join(args.vocab_path, 'med.vocab'))
+            #med_vocab._build_from_file(os.path.join(args.vocab_path, 'med.vocab'))
 
 
 
@@ -195,7 +197,7 @@ def main():
         model.init_bert_weights(state_dict)
         device, _ = _prepare_device(args.gpu)
         model = model.to(device)
-	max_seq_len_text_d = args.text_seq_length_discharge
+        max_seq_len_text_d = args.text_seq_length_discharge
         max_seq_len_text_r = args.text_seq_length_rest
 
         if max_seq_len_text_d  == 0:
@@ -259,7 +261,7 @@ def main():
                 if (med_codes == med_codes):
                     mtok = med_vocab.convert_to_ids(med_codes, 'M')
 
-                if args.cpt_codes:
+                if args.cpts:
                     cpt_codes = r['CPT_CD']
 
                 if (cpt_codes == cpt_codes):

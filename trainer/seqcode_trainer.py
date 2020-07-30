@@ -86,7 +86,6 @@ class SeqCodeTrainer(BaseTrainer):
                     100.0 * batch_idx / len(self.data_loader),
                     'visit_loss', loss_dict['visit_loss'],
                     'code_loss', loss_dict['code_loss']))
-                self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
             total_loss += loss#loss_dict['visit_loss'] + loss_dict['code_loss']
 
@@ -132,7 +131,6 @@ class SeqCodeTrainer(BaseTrainer):
                 self.writer.add_scalar('loss', loss.item())
                 total_val_loss += loss.item()
                 total_val_metrics += self._eval_metrics(logits.detach(), target.detach(), mask=mask.bool().detach())
-                self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
         return {
             'val_loss': total_val_loss / len(self.valid_data_loader),

@@ -19,7 +19,7 @@ class SeqCodeDataset(data.Dataset):
         self.data = self.data['data']
 
 
-        data_split_path = os.path.join(self.data_path, 'splits', 'split_{}.pkl'.format(split_num))
+        data_split_path = os.path.join(data_path, 'splits', 'split_{}.pkl'.format(split_num))
         if (os.path.exists(data_split_path)):
             self.train_idx, self.valid_idx = pickle.load(open(data_split_path, 'rb'))
 

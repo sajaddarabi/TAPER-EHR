@@ -16,7 +16,7 @@ class TextDataset(data.Dataset):
         self.data = pickle.load(open(os.path.join(data_path, 'data.pkl'), 'rb'))
         self.data_info = self.data['info']
         self.data = self.data['data']
-        data_split_path = os.path.join(data_path, 'splits', 'split_{}.pkl'.format(split_num)
+        data_split_path = os.path.join(data_path, 'splits', 'split_{}.pkl'.format(split_num))
         if (os.path.exists(data_split_path)):
             self.train_idx, self.valid_idx = pickle.load(open(data_split_path, 'rb'))
             self.train_data = self.create_dataset(text, self.train_idx)
@@ -40,7 +40,7 @@ class TextDataset(data.Dataset):
         return t
 
     def __getitem__(self, index):
-        if (hasattr(self, 'train_idx') and index in self.train_idx) or
+        if (hasattr(self, 'train_idx') and index in self.train_idx) or \
             (index < len(self.train_data)):
             d = self.train_data[index]
         else:

@@ -3,6 +3,9 @@ import torch
 from sklearn.metrics import roc_auc_score, average_precision_score, roc_curve, auc, roc_curve, precision_recall_curve
 def roc_auc(output,target):
     # temporary place holders..
+    # these will be run at the end of the epoch once all probabilities are obtained..
+    # refer to pr_auc_1
+
     #output = output.detach().cpu().numpy()
     #target = target.cpu().numpy()
     #if (torch.sum(target) == 0 or torch.sum(target) == len(target)):
@@ -12,12 +15,15 @@ def roc_auc(output,target):
     return 1.0
 
 def pr_auc(output, target):
-    # temporary place holders..
+    # temporary place holders.
+    # these will be run at the end of the epoch once all probabilities are obtained..
+    # refer to pr_auc_1
+
+
     #output = output.detach().cpu().numpy()
     #target = target.cpu().numpy()
     #if (torch.sum(target) == 0 or torch.sum(target) == len(target)):
     #    return 1.0
-
     #return average_precision_score(target, output)
     return 1.0
 
@@ -31,8 +37,6 @@ def pr_auc_1(output, target):
     precision, recall, _ = precision_recall_curve(target, output)
     area = auc(recall, precision)
     return area #average_precision_score(target, output)
-
-
 
 def accuracy(output, target):
     with torch.no_grad():
@@ -60,7 +64,6 @@ def accuracy2(output, target, t=0):
         correct += torch.sum(pred == target).item()
 
     return correct / len(target)
-
 
 def my_metric2(output, target, k=3):
     with torch.no_grad():
@@ -432,10 +435,38 @@ def recall_40(output, target, mask, k=40, window=1):
             r = 0
     return r
 
+def recall_50(output, target, mask, k=50, window=1):
+    bsz = output.shape[0]
+    idx = torch.arange(0, bsz, device=output.device)
+
+    mask = mask.squeeze()
+    for i in range(window):
+        mi = mask[i + 1:] * mask[:-i - 1]
+        mi = torch.nn.functional.pad(mi, (1 + i, 1 + i))
+        tm = mi[:-i - 1]
+        im = mi[i + 1:]
+
+        target_mask = torch.masked_select(idx, tm)
+        input_mask = torch.masked_select(idx, im)
+        #ii = ii.long()
+        output = output[input_mask, :]
+        output = output.float()
+        target = target[target_mask, :]
+        target = target.float()
+
+        _, tk = torch.topk(output, k)
+        tt = torch.gather(target, 1, tk)
+        r = torch.mean(torch.sum(tt, dim=1) / (torch.sum(target, dim=1) + 1e-7))
+        if r != r:
+            r = 0
+    return r
+
+
+
+
 
 
 def specificity(output, target, t=0.5):
-
     with torch.no_grad():
         preds = output > t#torch.argmax(output, dim=1)
         preds = preds.long()
@@ -452,7 +483,6 @@ def specificity(output, target, t=0.5):
     return s
 
 def sensitivity(output, target, t=0.5):
-
     with torch.no_grad():
         preds = output > t#torch.argmax(output, dim=1)
         preds = preds.long()
@@ -466,7 +496,6 @@ def sensitivity(output, target, t=0.5):
     return s
 
 def precision(output, target, t=0.5):
-
     with torch.no_grad():
         preds = output > t
         preds = preds.long()
@@ -477,6 +506,3 @@ def precision(output, target, t=0.5):
     if (s != s):
         s = 1
     return s
-
-
-

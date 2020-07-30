@@ -17,7 +17,7 @@
     "data_loader": {
         "type": "TextDataLoader",
         "args": {
-            "data_dir": "./data/textcode/biobert_pubmed/",
+            "data_dir": "./data/rerun/",
             "text": "discharge",
             "batch_size": 32,
             "shuffle": true,
