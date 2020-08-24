@@ -96,7 +96,7 @@ For example, to train the text summarizer on discharge run the following (make s
 ### Running Classification
 
 To run classification runs examples config files are in ./configs/taper.
-For example to run the mortality task run
+For example to run the readmission task run
 
 `python train.py -c ./configs/taper/red.json`
 
