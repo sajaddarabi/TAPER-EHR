@@ -64,7 +64,7 @@ In the above command
 
 Take a look [here](https://github.com/sajaddarabi/HCUP-US-EHR) for HCUP diagnosis/CPT code map examples.
 
-Once the above script finishes, generate kfold splts by running 
+Once the above script finishes, generate kfold splits by running 
 
 ```
 python kfold.py -p <path-to-data.pkl> -s <path-to-directory-data.pkl-is-stored>/splits
