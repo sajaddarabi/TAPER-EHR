@@ -24,7 +24,7 @@ PythonWebHDFS==0.2.3
 pytz==2018.9
 pyzmq==17.1.2
 regex==2019.4.12
-requests==2.21.0
+requests==2.31.0
 ruamel.yaml==0.16.0
 ruamel.yaml.clib==0.1.0
 s3transfer==0.2.0
